@@ -210,3 +210,6 @@ input[type='range'] {
 }
 .theory { color: var(--text-dim); font-size: .9rem; }
 .theory strong { color: var(--text); }
+
+.ttable--left th, .ttable--left td { text-align: left; vertical-align: top; }
+.ttable--left tbody tr:hover { background: none; }

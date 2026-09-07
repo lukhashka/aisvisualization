@@ -12,6 +12,16 @@ export interface Activation {
   formula: string;
   /** Поріг, вище якого вихід вважаємо логічною одиницею */
   threshold: number;
+  /**
+   * Значення net, на якому вихід перетинає поріг, тобто f(boundaryNet) = threshold.
+   * Саме воно задає розділювальну пряму: w₁x₁ + w₂x₂ + b = boundaryNet.
+   * Для більшості активацій це 0, але ReLU досягає 0.5 лише при net = 0.5.
+   */
+  boundaryNet: number;
+  /** Навіщо ця активація потрібна — показується в теорії */
+  purpose: string;
+  /** Область значень, словами */
+  outputRange: string;
 }
 
 export const activations: Record<ActivationId, Activation> = {
@@ -23,6 +33,9 @@ export const activations: Record<ActivationId, Activation> = {
     range: [-0.15, 1.15],
     formula: 'f(net) = 1, якщо net ≥ 0;  інакше 0',
     threshold: 0.5,
+    boundaryNet: 0,
+    outputRange: '{0, 1}',
+    purpose: 'Класичний формальний нейрон: вихід одразу є логічним бітом. Проста для аналізу, але похідна майже скрізь нульова, тому навчати нейрон градієнтними методами неможливо.',
   },
   sigmoid: {
     id: 'sigmoid',
@@ -32,6 +45,9 @@ export const activations: Record<ActivationId, Activation> = {
     range: [-0.15, 1.15],
     formula: 'f(net) = 1 / (1 + e^(−k·net))',
     threshold: 0.5,
+    boundaryNet: 0,
+    outputRange: '(0, 1)',
+    purpose: 'Гладка заміна порогової функції: має ненульову похідну, тому нейрон можна навчати. Вихід у межах (0, 1) зручно читати як упевненість. При зростанні k наближається до порогової.'
   },
   tanh: {
     id: 'tanh',
@@ -41,6 +57,9 @@ export const activations: Record<ActivationId, Activation> = {
     range: [-1.15, 1.15],
     formula: 'f(net) = tanh(k·net)',
     threshold: 0,
+    boundaryNet: 0,
+    outputRange: '(−1, 1)',
+    purpose: 'Та сама S-подібна форма, але центрована в нулі. Симетричний вихід прискорює навчання багатошарових мереж, бо сигнали не зміщені в бік додатних значень.'
   },
   relu: {
     id: 'relu',
@@ -50,6 +69,9 @@ export const activations: Record<ActivationId, Activation> = {
     range: [-0.2, 3],
     formula: 'f(net) = max(0, net)',
     threshold: 0.5,
+    boundaryNet: 0.5,
+    outputRange: '[0, +∞)',
+    purpose: 'Стандарт сучасних глибоких мереж: не насичується при великих net, тому градієнт не згасає. Але вихід необмежений — це вже не логічний біт, і його доводиться додатково порівнювати з порогом.'
   },
 };
 

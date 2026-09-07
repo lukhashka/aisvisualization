@@ -73,18 +73,20 @@ export function DecisionPlane({ w, act, fn, selected }: Props) {
     ctx.fillText('x₂', 0, 0);
     ctx.restore();
 
-    // розділювальна пряма w1·x1 + w2·x2 + b = 0
+    // Розділювальна пряма: w1·x1 + w2·x2 + b = c, де c — значення net,
+    // на якому вихід перетинає поріг (0 для більшості активацій, 0.5 для ReLU).
+    const c = act.boundaryNet;
     ctx.strokeStyle = '#e6edf3';
     ctx.lineWidth = 2;
     ctx.beginPath();
     if (Math.abs(w.w2) > 1e-6) {
-      const y1 = -(w.w1 * LO + w.bias) / w.w2;
-      const y2 = -(w.w1 * HI + w.bias) / w.w2;
+      const y1 = (c - w.w1 * LO - w.bias) / w.w2;
+      const y2 = (c - w.w1 * HI - w.bias) / w.w2;
       ctx.moveTo(toPx(LO), toPy(y1));
       ctx.lineTo(toPx(HI), toPy(y2));
       ctx.stroke();
     } else if (Math.abs(w.w1) > 1e-6) {
-      const x = -w.bias / w.w1;
+      const x = (c - w.bias) / w.w1;
       ctx.moveTo(toPx(x), PAD);
       ctx.lineTo(toPx(x), PAD + SIZE);
       ctx.stroke();

@@ -17,12 +17,32 @@ npm run build    # результат у dist/
 npm run preview  # локальний перегляд зібраного
 ```
 
-Вміст `dist/` можна залити на будь-який статичний хостинг (GitHub Pages, Netlify,
-Vercel). Роутинг — на хеші (`#/logic-neuron`), тому жодних налаштувань сервера
-не потрібно.
+Роутинг — на хеші (`#/logic-neuron`), тому жодних налаштувань сервера не потрібно:
+вміст `dist/` можна залити на будь-який статичний хостинг.
 
-> Якщо сайт лежатиме не в корені домену (напр. `user.github.io/ais/`),
-> додай у `vite.config.ts` рядок `base: '/ais/'`.
+## Публікація на GitHub Pages
+
+Сайт: **https://lukhashka.github.io/aisvisualization/**
+
+Розгортання автоматичне: будь-який `push` у гілку `main` запускає
+[.github/workflows/deploy.yml](.github/workflows/deploy.yml), який збирає проєкт
+і публікує `dist/` на Pages.
+
+```bash
+git add -A
+git commit -m "опис змін"
+git push          # через ~1 хв зміни вже на сайті
+```
+
+Разове налаштування в репозиторії (робиться один раз):
+**Settings → Pages → Build and deployment → Source: `GitHub Actions`**.
+
+Базовий шлях (`base`) підставляється у воркфлоу автоматично з назви репозиторію
+(`BASE_PATH`), тож при перейменуванні репо нічого правити не треба. Локально
+`base` завжди `/`.
+
+Стан останнього розгортання видно на вкладці
+[Actions](https://github.com/lukhashka/aisvisualization/actions).
 
 ## Структура
 
